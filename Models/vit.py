@@ -11,7 +11,7 @@ import numpy as np
 from Models.activation import (GELU_s, SiLU_s, ZiLU_Old, ArcTan,
                                ArcTan_Approx, ZiLU, ZiLU_Approx, SquarePlus)
 
-'''VGG Model Class'''
+'''ViT Model Class'''
 class ViT(nn.Module): 
     def __init__(self, args): 
         super(ViT, self).__init__()
