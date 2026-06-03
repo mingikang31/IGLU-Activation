@@ -20,7 +20,7 @@ from transformers import get_linear_schedule_with_warmup
 
 # Custom Imports
 from utils import set_seed
-from Models.activation import ZiLU, ZiLU_Approx
+from Models.activation import IGLU, IGLU_Approx
 import numpy as np
 
 """ Setup distributed training environment """
@@ -280,7 +280,7 @@ def Train_Eval(args,
         base_model = model.module if hasattr(model, 'module') else model
         
         for name, module in base_model.named_modules():
-            if isinstance(module, ZiLU) or isinstance(module, ZiLU_Approx):
+            if isinstance(module, IGLU) or isinstance(module, IGLU_Approx):
                 module.register_forward_hook(make_hook(name, pre_activations))
         
         with torch.no_grad():
@@ -302,8 +302,8 @@ def Train_Eval(args,
             print(f"\nAverage Tail Index: {avg}")
             epoch_results.append(f"Average Tail Index: {avg}")
         else:
-            print("Warning: No ZiLU layers found. Check activation type.")
-            epoch_results.append("Warning: No ZiLU layers found.")
+            print("Warning: No IGLU layers found. Check activation type.")
+            epoch_results.append("Warning: No IGLU layers found.")
     
     # Saving model 
     save_path = os.path.join(args.output_dir, f"final_model.pth")
@@ -733,7 +733,7 @@ def Train_Eval_GPT(args,
         pre_activations = {}
         
         for name, module in model.named_modules():
-            if isinstance(module, ZiLU) or isinstance(module, ZiLU_Approx):
+            if isinstance(module, IGLU) or isinstance(module, IGLU_Approx):
                 module.register_forward_hook(make_hook(name, pre_activations))
         
         with torch.no_grad():
@@ -756,8 +756,8 @@ def Train_Eval_GPT(args,
             print(f"\nAverage Tail Index: {avg}")
             epoch_results.append(f"Average Tail Index: {avg}")
         else:
-            print("Warning: No ZiLU layers found. Check activation type.")
-            epoch_results.append("Warning: No ZiLU layers found.")
+            print("Warning: No IGLU layers found. Check activation type.")
+            epoch_results.append("Warning: No IGLU layers found.")
         
     # Saving model 
     save_path = os.path.join(args.output_dir, f"final_model.pth")

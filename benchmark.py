@@ -74,10 +74,10 @@ def ArcTan(x):
 def ArcTan_Approx(x):
     return (0.5 + torch.clamp(x, min=0)) / (1.0 + torch.abs(x))
 
-def ZiLU(x):
+def IGLU(x):
     return x * (0.5 + (1.0 / torch.pi) * torch.arctan(x))
 
-def ZiLU_Approx(x):
+def IGLU_Approx(x):
     return x * ((0.5 + torch.clamp(x, min=0)) / (1.0 + torch.abs(x)))
 
 def SeLU(x):
@@ -197,8 +197,8 @@ def run_benchmarks():
         "SquarePlus": SquarePlus,
         "ArcTan": ArcTan,
         "ArcTan_Approx": ArcTan_Approx,
-        "ZiLU": ZiLU,
-        "ZiLU_Approx": ZiLU_Approx, 
+        "IGLU": IGLU,
+        "IGLU_Approx": IGLU_Approx, 
         "SeLU": SeLU
     }
 

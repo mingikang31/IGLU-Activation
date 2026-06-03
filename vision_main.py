@@ -1,4 +1,4 @@
-"""Main File for ZiLU Activation Training and Evaluation"""
+"""Main File for IGLU Activation Training and Evaluation"""
 
 
 import argparse 
@@ -13,7 +13,6 @@ from train_eval import Train_Eval, Train_Eval_LT, Train_Eval_ImageNet, setup_dis
 from dataset import CIFAR10, CIFAR100, CIFAR100_LT, ImageNet1K, mixup_fn
 
 # Models 
-from Models.vgg import VGG
 from Models.resnet import ResNet, ResNet_CIFAR
 from Models.vit import ViT
 
@@ -49,16 +48,16 @@ def args_parser():
 
     # Model Args
     parser.add_argument('--activation', type=str, default='relu', choices=[
-        'relu', 'gelu', 'silu', 'sigmoid', 'gelu_s', 'silu_s', 'zilu_old', 
-        'arctan', 'arctan_approx', 'zilu', 'zilu_approx', 'leaky_relu', 'prelu', 
+        'relu', 'gelu', 'silu', 'sigmoid', 'gelu_s', 'silu_s', 'iglu_old', 
+        'arctan', 'arctan_approx', 'iglu', 'iglu_approx', 'leaky_relu', 'prelu', 
         'elu', 'hardshrink', 'softshrink', 'tanhshrink', 'hardtanh', 'softplus', 'softsign', 
         'tanh', 'celu', 'mish', 'hardswish', 'hardsigmoid', 'selu', 'squareplus', 'identity'
     ], help='Activation function to use')
-    parser.add_argument('--sigma', type=float, default=None, help='Sigma parameter for ZiLU activation function')
+    parser.add_argument('--sigma', type=float, default=None, help='Sigma parameter for IGLU activation function')
     parser.add_argument('--inplace', action='store_true', help='Use inplace activation functions')
     parser.set_defaults(inplace=False)
 
-    parser.add_argument('--model', type=str, default='vgg11', choices=['vgg11', 'vgg13', 'vgg16', 'vgg19', 'resnet18', 'resnet34', 'resnet50', 'resnet20', 'resnet32', 'resnet44', 'resnet56', 'vit-tiny', 'vit-small', 'vit-medium', 'vit-base'], help='Model architecture')
+    parser.add_argument('--model', type=str, default='resnet20', choices=['resnet18', 'resnet34', 'resnet50', 'resnet20', 'resnet32', 'resnet44', 'resnet56', 'vit-tiny', 'vit-small', 'vit-medium', 'vit-base'], help='Model architecture')
 
     # Arguments for Data 
     parser.add_argument("--dataset", type=str, default="cifar10", choices=["cifar10", "cifar100", "cifar100-lt", "imagenet1k"], help="Dataset to use for training and evaluation")
@@ -110,7 +109,7 @@ def args_parser():
     parser.add_argument('--seed', default=0, type=int)
 
     # Output Arguments 
-    parser.add_argument("--output_dir", type=str, default="./Output/ZiLU/vgg11", help="Directory to save the output files")
+    parser.add_argument("--output_dir", type=str, default="./Output/IGLU/vgg11", help="Directory to save the output files")
     
     # Test Arguments
     parser.add_argument("--test_only", action="store_true", help="Only test the model")
@@ -280,6 +279,6 @@ def main(args):
         write_to_file(os.path.join(args.output_dir, "train_eval_results.txt"), train_eval_results)
 
 if __name__ == '__main__': 
-    parser = argparse.ArgumentParser(description="ZaiLU Activation Function", parents=[args_parser()], add_help=False)
+    parser = argparse.ArgumentParser(description="IGLU Activation Function", parents=[args_parser()], add_help=False)
     args = parser.parse_args()
     main(args)

@@ -9,7 +9,7 @@ Accepted to the European Conference on Machine Learning and Principles and Pract
 **Project Periods:** Fall 2025, Spring 2026 
 
 ## Overview
-Through the introduction of transformer architectures, GELU and SiLU, a sooth, non-linear activation functions proved to show competitive advantages over ReLU in certain situations. This repository contains code for **IGLU**, a novel activation function that generalizes ReLU, GELU, and SiLU, taking inspiration from GELU's Gaussian Error Phi Gating Function. Similar to GELU and SiLU, IGLU employs an arctan (and approximation) as the gating function with controllable parameter sigma. 
+Through the introduction of transformer architectures, GELU and SiLU, a smooth, non-linear activation functions proved to show competitive advantages over ReLU in certain situations. This repository contains code for **IGLU**, a novel activation function, taking inspiration from GELU's Gaussian Error Phi Gating Function. Similar to GELU and SiLU, IGLU employs an arctan (and approximation) as the gating function with controllable parameter sigma. 
 
 This repository explores image classification on CIFAR-10/100 datasets for vision models and WikiText103 dataset for language models for perplexity measurements. 
 
@@ -17,7 +17,7 @@ This repository explores image classification on CIFAR-10/100 datasets for visio
 - **IGLU Activation Function**: Any standard neural network architecture can be adapted to use IGLU activation function in place of traditional activation functions. 
 - **IGLU Approximation**: To reduce the computational burden of the arctan calculations, we provide *IGLU-Approximation* that is faster to compute and almost identical to the original IGLU formulation. 
 - **Controlable Sigma Parameter**: Sigma parameter for *IGLU* and *IGLU-Approximate* allows for full control of model architecture. 
-- **Vision Models**: This repository provides implementation of VGG, ResNet, Vision Transformer architectures for cross vision model evaluation. 
+- **Vision Models**: This repository provides implementation of ResNet and Vision Transformer architectures for cross vision model evaluation. 
 - **Language Models**: This repository provides implementation of GPT2 architecture for evaluating language models. 
 
 ### Implementation 
@@ -30,37 +30,13 @@ This repository explores image classification on CIFAR-10/100 datasets for visio
 - **`IGLU`**: IGLU activation function with ArcTan gating function. 
 - **`IGLU_Approx`**: IGLU Approximation activation function with ArcTan Approximation gating function. 
 
-## Project Structure
-
-```
-.
-├── bash/                   # Bash files for job submission on HPC/Server
-├── models/                 # Models directory
-│   ├── vgg.py              # VGG architecture implementation
-│   ├── resnet.py           # ResNet architecture implementation
-│   ├── vit.py              # Vision Transformer architecture implementation
-│   ├── gpt2.py             # GPT2 architecture implementation
-│   └── activation.py       # Activation function implementations
-├── Project Docs/           # Project documentation, reports, posters, etc.
-│   └── Related Works/      # Related works papers for paper
-├── Data/                   # Dataset directory (CIFAR-10/100, WikiText103) 
-├── dataset.py              # CIFAR-10/100 & WikiText103 wrappers
-├── train_eval.py           # Training & evaluation loop 
-├── language_main.py        # CLI entrypoint for language model evaluation (GPT2)
-├── vision_main.py          # CLI entrypoint for vision model evaluation (VGG, ResNet, ViT)
-├── utils.py                # I/O, logging, seed setup, GPU check
-├── requirements.txt        # Python dependencies
-├── README.md               # ← you are here
-└── LICENSE                 # MIT License
-```
-
 ## License
 
 IGLU-Activation is released under the MIT License. Please see the [LICENSE](https://www.google.com/search?q=LICENSE) file for more information.
 
 ## Contributing
 
-Contributions, issues, and feature requests are welcome\!
+Contributions, issues, and question requests are welcome\!
 Please reach out to:
 
   - **Mingi Kang** [mkang2@bowdoin.edu](mailto:mkang2@bowdoin.edu)

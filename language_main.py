@@ -1,4 +1,4 @@
-"""Main File for ZiLU Activation Function for Training GPT2 Models"""
+"""Main File for IGLU Activation Function for Training GPT2 Models"""
 
 import argparse 
 from pathlib import Path 
@@ -14,7 +14,7 @@ from utils import write_to_file, set_seed
 """Default Model: GPT2-small"""
 
 def args_parser():
-    parser = argparse.ArgumentParser(description="ZiLU Activation Function Experiments for GPT2 Models")
+    parser = argparse.ArgumentParser(description="IGLU Activation Function Experiments for GPT2 Models")
 
     # Model Args
     parser.add_argument('--vocab_size', type=int, default=50257, help='Vocabulary size for GPT2 model')
@@ -26,12 +26,12 @@ def args_parser():
 
     # Activation Function Args 
     parser.add_argument('--activation', type=str, default='relu', choices=[
-        'relu', 'gelu', 'silu', 'sigmoid', 'gelu_s', 'silu_s', 'zilu_old', 
-        'arctan', 'arctan_approx', 'zilu', 'zilu_approx', 'leaky_relu', 'prelu', 
+        'relu', 'gelu', 'silu', 'sigmoid', 'gelu_s', 'silu_s', 'iglu_old', 
+        'arctan', 'arctan_approx', 'iglu', 'iglu_approx', 'leaky_relu', 'prelu', 
         'elu', 'hardshrink', 'softshrink', 'tanhshrink', 'hardtanh', 'softplus', 'softsign', 
         'tanh', 'celu', 'mish', 'hardswish', 'hardsigmoid', 'selu', 'squareplus', 'identity'
     ], help='Activation function to use')    
-    parser.add_argument('--sigma', type=float, default=None, help='Sigma parameter for ZiLU activation function')
+    parser.add_argument('--sigma', type=float, default=None, help='Sigma parameter for IGLU activation function')
     parser.add_argument('--inplace', action='store_true', help='Use inplace activation functions')
     parser.set_defaults(inplace=False)
 
@@ -73,7 +73,7 @@ def args_parser():
     parser.add_argument('--seed', default=0, type=int)
 
     # Output Arguments 
-    parser.add_argument("--output_dir", type=str, default="./Output/ZiLU/GPT2", help="Directory to save the output files")
+    parser.add_argument("--output_dir", type=str, default="./Output/IGLU/GPT2", help="Directory to save the output files")
 
     # Test Arguments
     parser.add_argument("--test_only", action="store_true", help="Only test the model")
@@ -152,6 +152,6 @@ def main(args):
         write_to_file(os.path.join(args.output_dir, "train_eval_results.txt"), train_eval_results)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="GPT2 with ZiLU Activation Function", parents=[args_parser()], add_help=False)
+    parser = argparse.ArgumentParser(description="GPT2 with IGLU Activation Function", parents=[args_parser()], add_help=False)
     args = parser.parse_args()
     main(args) 

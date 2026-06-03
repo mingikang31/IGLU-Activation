@@ -8,8 +8,8 @@ import numpy as np
 
 
 # Activation Functions 
-from Models.activation import (GELU_s, SiLU_s, ZiLU_Old, ArcTan,
-                               ArcTan_Approx, ZiLU, ZiLU_Approx, SquarePlus)
+from Models.activation import (GELU_s, SiLU_s, IGLU_Old, ArcTan,
+                               ArcTan_Approx, IGLU, IGLU_Approx, SquarePlus)
 
 '''ViT Model Class'''
 class ViT(nn.Module): 
@@ -216,13 +216,13 @@ class TransformerEncoder(nn.Module):
             # Previous Activation Generation
             "gelu_s": lambda: GELU_s(sigma=args.sigma, inplace=args.inplace), 
             "silu_s": lambda: SiLU_s(sigma=args.sigma, inplace=args.inplace), 
-            "zilu_old": lambda: ZiLU_Old(sigma=args.sigma, inplace=args.inplace), 
+            "iglu_old": lambda: IGLU_Old(sigma=args.sigma, inplace=args.inplace), 
 
             # Current Activation Generation 
             "arctan": lambda: ArcTan(sigma=args.sigma), 
             "arctan_approx": lambda: ArcTan_Approx(sigma=args.sigma), 
-            "zilu": lambda: ZiLU(sigma=args.sigma), 
-            "zilu_approx": lambda: ZiLU_Approx(sigma=args.sigma), 
+            "iglu": lambda: IGLU(sigma=args.sigma), 
+            "iglu_approx": lambda: IGLU_Approx(sigma=args.sigma), 
             "squareplus": lambda: SquarePlus(beta=4),
 
             # Other Activations
@@ -302,13 +302,13 @@ class TransformerEncoder_DropPath(nn.Module):
             # Previous Activation Generation
             "gelu_s": lambda: GELU_s(sigma=args.sigma, inplace=args.inplace), 
             "silu_s": lambda: SiLU_s(sigma=args.sigma, inplace=args.inplace), 
-            "zilu_old": lambda: ZiLU_Old(sigma=args.sigma, inplace=args.inplace), 
+            "iglu_old": lambda: IGLU_Old(sigma=args.sigma, inplace=args.inplace), 
 
             # Current Activation Generation 
             "arctan": lambda: ArcTan(sigma=args.sigma), 
             "arctan_approx": lambda: ArcTan_Approx(sigma=args.sigma), 
-            "zilu": lambda: ZiLU(sigma=args.sigma), 
-            "zilu_approx": lambda: ZiLU_Approx(sigma=args.sigma), 
+            "iglu": lambda: IGLU(sigma=args.sigma), 
+            "iglu_approx": lambda: IGLU_Approx(sigma=args.sigma), 
             "squareplus": lambda: SquarePlus(beta=4),
 
             # Other Activations
