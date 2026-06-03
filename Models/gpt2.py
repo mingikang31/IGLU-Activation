@@ -53,7 +53,8 @@ class GPT2(nn.Module):
         ])
 
         # Final Layer Norm 
-        self.layer_norm = nn.LayerNorm(embedding_dim)
+        # self.layer_norm = nn.LayerNorm(embedding_dim)
+        self.layer_norm = nn.Identity()
 
         # Linear output layer 
         self.lm_head = nn.Linear(embedding_dim, vocab_size, bias=False)
@@ -234,8 +235,10 @@ class TransformerBlock(nn.Module):
         super(TransformerBlock, self).__init__()
         self.attention = CausalMultiHeadAttention(d_model, num_heads, max_seq_length, dropout)
         self.mlp = MLP(args, d_model, d_ff, dropout)
-        self.layer_norm1 = nn.LayerNorm(d_model)
-        self.layer_norm2 = nn.LayerNorm(d_model)
+        # self.layer_norm1 = nn.LayerNorm(d_model)
+        # self.layer_norm2 = nn.LayerNorm(d_model)
+        self.layer_norm1 = nn.Identity()
+        self.layer_norm2 = nn.Identity()
 
     def forward(self, x):
         # Pre-Norm Multi-Head Attention 

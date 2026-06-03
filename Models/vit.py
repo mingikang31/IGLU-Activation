@@ -101,7 +101,8 @@ class PatchEmbedding(nn.Module):
         self.n_channels = n_channels # Number of Channels in Image
         
         self.linear_projection = nn.Conv2d(in_channels=n_channels, out_channels=d_hidden, kernel_size=patch_size, stride=patch_size) # Linear Projection Layer
-        self.norm = nn.LayerNorm(d_hidden) # Normalization Layer
+        # self.norm = nn.LayerNorm(d_hidden) # Normalization Layer
+        self.norm = nn.Identity()
         
         self.flatten = nn.Flatten(start_dim=2)
         
@@ -195,8 +196,10 @@ class TransformerEncoder(nn.Module):
 
         self.attention = MultiHeadAttention(d_hidden, num_heads, attention_dropout)
 
-        self.norm1 = nn.LayerNorm(d_hidden)
-        self.norm2 = nn.LayerNorm(d_hidden)
+        # self.norm1 = nn.LayerNorm(d_hidden)
+        # self.norm2 = nn.LayerNorm(d_hidden)
+        self.norm1 = nn.Identity()
+        self.norm2 = nn.Identity()
         self.dropout1 = nn.Dropout(dropout)
         self.dropout2 = nn.Dropout(dropout)
 
@@ -280,8 +283,10 @@ class TransformerEncoder_DropPath(nn.Module):
 
         self.attention = MultiHeadAttention(d_hidden, num_heads, attention_dropout)
 
-        self.norm1 = nn.LayerNorm(d_hidden)
-        self.norm2 = nn.LayerNorm(d_hidden)
+        # self.norm1 = nn.LayerNorm(d_hidden)
+        # self.norm2 = nn.LayerNorm(d_hidden)
+        self.norm1 = nn.Identity()
+        self.norm1 = nn.Identity()
         self.drop_path = DropPath(drop_path) if drop_path > 0.0 else nn.Identity()
 
         # Activation Selection

@@ -20,7 +20,7 @@ FAILED=0
 
 COUNT=$((COUNT + 1)) 
 
-output_dir="./Output/ETI/ResNet20_IGLU_0.1_s42"
+output_dir="./Output/ETI/ResNet20_NoBatchNorm_IGLU_0.1_s42"
 
 echo "[$COUNT] Resnet-20"
 
@@ -60,7 +60,7 @@ echo ""
 
 COUNT=$((COUNT + 1)) 
 
-output_dir="./Output/ETI/VIT-Tiny_IGLU_5.0_s42"
+output_dir="./Output/ETI/VIT-Tiny_NoLayerNorm_IGLU_5.0_s42"
 
 echo "[$COUNT]"
 
@@ -100,7 +100,7 @@ echo ""
 
 COUNT=$((COUNT + 1)) 
 
-output_dir="./Output/ETI/GPT2_IGLU_5.0_s42" 
+output_dir="./Output/ETI/GPT2_NoLayerNorm_IGLU_5.0_s42" 
 
 echo "[$COUNT]"
 
