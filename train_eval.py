@@ -20,6 +20,8 @@ from transformers import get_linear_schedule_with_warmup
 
 # Custom Imports
 from utils import set_seed
+from Models.activation import ZiLU, ZiLU_Approx
+import numpy as np
 
 """ Setup distributed training environment """
 def setup_distributed():
@@ -83,6 +85,21 @@ def balanced_accuracy(output, target, num_classes):
     
     return balanced_acc
 
+"""Hill Estimator for Empirical Tail Index"""
+def hill_estimator(data, k=100):
+    """
+    k: number of upper order statistics to use.
+    lower result -> heavier tail.
+    """
+    sorted_data = np.sort(np.abs(data))[::-1]  # Sort in descending order
+    log_ratios = np.log(sorted_data[:k] / sorted_data[k])
+    alpha_hat = k / np.sum(log_ratios)
+    return alpha_hat 
+
+def make_hook(name, storage):
+    def hook(module, input, output):
+        storage[name] = input[0].detach().cpu().flatten()
+    return hook
 
 """
 [Training Functions] 
@@ -255,6 +272,44 @@ def Train_Eval(args,
                 
     epoch_results.append(f"\nAverage Epoch Time: {sum(epoch_times) / len(epoch_times):.4f}s")
     epoch_results.append(f"Max Accuracy: {max_accuracy:.4f}% at Epoch {max_epoch}")
+
+    if args.measure_tail_index:
+        model.eval()
+        pre_activations = {}
+
+        base_model = model.module if hasattr(model, 'module') else model
+        
+        for name, module in base_model.named_modules():
+            if isinstance(module, ZiLU) or isinstance(module, ZiLU_Approx):
+                module.register_forward_hook(make_hook(name, pre_activations))
+        
+        with torch.no_grad():
+            for images, labels in test_loader: 
+                # handle both vision and language batch formats
+                images = images.to(device)
+                _ = base_model(images)
+                break
+        
+        hill_estimations = []
+        for name, acts in pre_activations.items():
+            alpha = hill_estimator(acts.numpy())
+            print(f"Tail index for {name}: {alpha}")
+            hill_estimations.append(alpha)
+
+        
+        if hill_estimations:
+            avg = sum(hill_estimations) / len(hill_estimations)
+            print(f"\nAverage Tail Index: {avg}")
+            epoch_results.append(f"Average Tail Index: {avg}")
+        else:
+            print("Warning: No ZiLU layers found. Check activation type.")
+            epoch_results.append("Warning: No ZiLU layers found.")
+    
+    # Saving model 
+    save_path = os.path.join(args.output_dir, f"final_model.pth")
+    model_to_save = model.module if hasattr(model, 'module') else model
+
+    save_model(model_to_save, args, optimizer, scheduler, epoch, test_top1_5[0], max_accuracy, save_path)
     
     return epoch_results
 
@@ -461,7 +516,13 @@ def Train_Eval_LT(args,
     epoch_results.append(f"\nAverage Epoch Time: {sum(epoch_times) / len(epoch_times):.4f}s")
     epoch_results.append(f"Max Top1 Accuracy: {max_accuracy:.4f}% at Epoch {max_epoch}")
     epoch_results.append(f"Max Balanced Accuracy: {max_bal_accuracy:.4f}% at Epoch {max_bal_epoch}")
+    
+    # Saving model 
+    save_path = os.path.join(args.output_dir, f"final_model.pth")
+    model_to_save = model.module if hasattr(model, 'module') else model
 
+    save_model(model_to_save, args, optimizer, scheduler, epoch, test_top1_5[0], max_accuracy, save_path)
+    
     return epoch_results
 
 def Train_Eval_GPT(args, 
@@ -666,6 +727,43 @@ def Train_Eval_GPT(args,
                 
     epoch_results.append(f"\nAverage Epoch Time: {sum(epoch_times) / len(epoch_times):.4f}s")
     epoch_results.append(f"Min Perplexity: {min_perplexity:.4f} at Epoch {min_epoch}")
+
+    if args.measure_tail_index:
+        model.eval()
+        pre_activations = {}
+        
+        for name, module in model.named_modules():
+            if isinstance(module, ZiLU) or isinstance(module, ZiLU_Approx):
+                module.register_forward_hook(make_hook(name, pre_activations))
+        
+        with torch.no_grad():
+            for batch in val_loader: 
+                # handle both vision and language batch formats
+                tokens = batch["input_ids"].to(device)
+                inputs = tokens[:, :-1].contiguous()
+                targets = tokens[:, 1:].contiguous()
+                _, _ = model(inputs, target=targets)
+                break
+        
+        hill_estimations = []
+        for name, acts in pre_activations.items():
+            alpha = hill_estimator(acts.numpy())
+            print(f"Tail index for {name}: {alpha}")
+            hill_estimations.append(alpha)
+        
+        if hill_estimations:
+            avg = sum(hill_estimations) / len(hill_estimations)
+            print(f"\nAverage Tail Index: {avg}")
+            epoch_results.append(f"Average Tail Index: {avg}")
+        else:
+            print("Warning: No ZiLU layers found. Check activation type.")
+            epoch_results.append("Warning: No ZiLU layers found.")
+        
+    # Saving model 
+    save_path = os.path.join(args.output_dir, f"final_model.pth")
+    model_to_save = model.module if hasattr(model, 'module') else model
+
+    save_model(model_to_save, args, optimizer, scheduler, epoch, test_ppl, min_perplexity, save_path)
 
     return epoch_results
 
@@ -916,7 +1014,7 @@ def save_model(model, args, optimizer, scheduler, epoch, last_accuracy, best_acc
         'epoch': epoch,
         'model_state_dict': model.state_dict(),
         'optimizer_state_dict': optimizer.state_dict(),
-        'scheduler_state_dict': scheduler.state_dict(),
+        'scheduler_state_dict': scheduler.state_dict() if scheduler is not None else None,
         'last_accuracy': last_accuracy,
         'best_accuracy': best_accuracy,
         'args': args

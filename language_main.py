@@ -84,6 +84,10 @@ def args_parser():
     parser.set_defaults(ddp=False)
     parser.add_argument("--ddp_batch_size", type=int, default=32, help="Batch size per GPU for DDP training")
 
+    # Empirical Tail Index Measurment
+    parser.add_argument("--measure_tail_index", action="store_true", help="Measuring Empirical Tail Index with Hill Estimator")
+    parser.set_defaults(measure_tail_index=False)
+
     return parser 
 
 def main(args):
